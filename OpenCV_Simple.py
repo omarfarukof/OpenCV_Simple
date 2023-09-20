@@ -3,9 +3,14 @@
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
-
+import os
 # Imports Ends
 # 
+
+#  Linux KDE Error
+def qt_error():
+    os.environ['QT_QPA_PLATFORM'] = 'xcb'
+
 # 
 # OpenCV_Simple Functions Definition Starts
 
@@ -35,15 +40,19 @@ def print_cv(image , title="Image"):
     plt.show() 
 
 # OpenCV Image Display with OpenCV
-def show_cv(image , title="Image" , end_time=0 ):
+def show_cv(image , title="Image" , wait=0 ):
     # Display the image using matplotlib
     cv2.imshow(title, image)
-    cv2.waitKey(end_time)
+
+    cv2.waitKey(wait)
     cv2.destroyAllWindows()
 
 # OpenCV Image Resize
-def resize_cv(image , width , height):
-    return cv2.resize(image , (width , height))
+def resize_cv(image , height = 0 , width = 0 , scale_x = 1 , scale_y = 1, scale = -1 ):
+    if scale != -1:
+        scale_x = scale
+        scale_y = scale
+    return cv2.resize(image , (width , height) , fx = scale_x , fy = scale_y)
 
 # OpenCV Image Rotate
 def rotate_cv(image , rotation:int = 0):
@@ -52,4 +61,20 @@ def rotate_cv(image , rotation:int = 0):
         return image
     return cv2.rotate(image , rotation)
 
+def size_cv(image):
+    return image.shape
 
+# def cvtcolor_cv(image , mode):
+#     return cv2.cvtColor(image , exec(mode))
+
+
+def video_cv(source , live = True , exit_key = 'q' , wait = 1):
+    cap = cv2.VideoCapture(source)
+    while True:
+        ret, frame = cap.read()
+        
+        cv2.imshow("Video", frame)
+        if cv2.waitKey(wait) == ord(exit_key):
+            break
+    cap.release()
+    cv2.destroyAllWindows()
